@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>運命数診断 ｜ 星があなたの本当の姿を映し出す</title>
+<meta name="description" content="名前と生年月日だけでわかる無料の運命数診断。あなたの運命数とタイプ、今日のアドバイスとラッキーカラーを星が告げます。">
+<meta property="og:title" content="運命数診断 ｜ 星があなたの本当の姿を映し出す">
+<meta property="og:description" content="名前と生年月日だけでわかる無料の運命数診断。">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#070b1f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Shippori+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night-1: #04061a;
+    --night-2: #0d1240;
+    --night-3: #2a1856;
+    --gold: #e8c97a;
+    --gold-soft: #f6e4b0;
+    --gold-deep: #b8913f;
+    --text: #f1ecdf;
+    --text-dim: #b9b3c9;
+    --glass: rgba(20, 22, 60, 0.55);
+    --glass-line: rgba(232, 201, 122, 0.35);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    color: var(--text);
+    background: radial-gradient(ellipse at 50% 0%, var(--night-3) 0%, var(--night-2) 40%, var(--night-1) 100%) fixed;
+    background-color: var(--night-1);
+    overflow-x: hidden;
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+  }
+
+  #sky {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* 天の川のようなぼんやりした光 */
+  .nebula {
+    position: fixed;
+    inset: -20%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 40% 25% at 30% 35%, rgba(130, 90, 200, 0.18), transparent 70%),
+      radial-gradient(ellipse 35% 20% at 70% 65%, rgba(60, 110, 200, 0.16), transparent 70%),
+      radial-gradient(ellipse 25% 15% at 55% 20%, rgba(232, 201, 122, 0.06), transparent 70%);
+    animation: drift 40s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: translate(0, 0) rotate(0deg); }
+    to   { transform: translate(-3%, 2%) rotate(4deg); }
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 48px 20px calc(48px + env(safe-area-inset-bottom));
+  }
+
+  /* ---------- ヘッダー ---------- */
+  header { text-align: center; margin-bottom: 32px; }
+  .moon-mark {
+    width: 64px; height: 64px;
+    margin: 0 auto 16px;
+    filter: drop-shadow(0 0 12px rgba(232, 201, 122, 0.7));
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .eyebrow {
+    font-family: "Cinzel", serif;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    opacity: 0.85;
+  }
+  h1 {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    margin: 6px 0 12px;
+    background: linear-gradient(180deg, #fff8e1 0%, var(--gold) 55%, var(--gold-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(232, 201, 122, 0.25);
+  }
+  .lead { font-size: 14px; color: var(--text-dim); }
+
+  /* ---------- カード ---------- */
+  .card {
+    position: relative;
+    background: var(--glass);
+    border: 1px solid var(--glass-line);
+    border-radius: 20px;
+    padding: 32px 24px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), inset 0 0 40px rgba(232, 201, 122, 0.05);
+  }
+  .card::before, .card::after {
+    content: "✦";
+    position: absolute;
+    color: var(--gold);
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  .card::before { top: 10px; left: 14px; }
+  .card::after { bottom: 10px; right: 14px; }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--gold); font-size: 12px;
+    margin: 4px 0 24px;
+  }
+  .divider::before, .divider::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glass-line), transparent);
+  }
+
+  /* ---------- フォーム ---------- */
+  .field { margin-bottom: 22px; }
+  .field label {
+    display: block;
+    font-size: 14px;
+    color: var(--gold-soft);
+    margin-bottom: 8px;
+  }
+  input[type="text"], select {
+    width: 100%;
+    font-family: inherit;
+    font-size: 16px; /* iOSでズームさせない */
+    color: var(--text);
+    background: rgba(5, 8, 30, 0.6);
+    border: 1px solid rgba(232, 201, 122, 0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color .3s, box-shadow .3s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="text"]::placeholder { color: rgba(185, 179, 201, 0.55); }
+  input[type="text"]:focus, select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(232, 201, 122, 0.18), 0 0 18px rgba(232, 201, 122, 0.25);
+  }
+  .date-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 8px; }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: "";
+    position: absolute; right: 12px; top: 50%;
+    width: 6px; height: 6px;
+    border-right: 1.5px solid var(--gold);
+    border-bottom: 1.5px solid var(--gold);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  select { padding-right: 28px; }
+  select option { background: #10143a; color: var(--text); }
+
+  .error {
+    min-height: 1.4em;
+    font-size: 13px;
+    color: #ff9fb0;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  /* ---------- ボタン ---------- */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    border: none;
+    border-radius: 999px;
+    padding: 17px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .3s, filter .3s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-gold {
+    position: relative;
+    overflow: hidden;
+    color: #2a1a05;
+    background: linear-gradient(135deg, #fff1c4 0%, var(--gold) 45%, var(--gold-deep) 100%);
+    box-shadow: 0 8px 28px rgba(232, 201, 122, 0.35);
+  }
+  .btn-gold::after {
+    content: "";
+    position: absolute; top: 0; left: -60%;
+    width: 40%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.65), transparent);
+    animation: shine 3.2s ease-in-out infinite;
+  }
+  @keyframes shine {
+    0%, 60% { left: -60%; }
+    100% { left: 130%; }
+  }
+  .btn-ghost {
+    color: var(--gold-soft);
+    background: transparent;
+    border: 1px solid var(--glass-line);
+    font-size: 15px;
+    padding: 14px 20px;
+  }
+
+  .note { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 16px; }
+
+  /* ---------- 演出（ローディング） ---------- */
+  #ritual {
+    position: fixed; inset: 0;
+    z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(circle at center, rgba(20, 14, 60, 0.92), rgba(2, 3, 14, 0.98));
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .8s, visibility .8s;
+  }
+  #ritual.show { opacity: 1; visibility: visible; }
+
+  .circle-box { position: relative; width: 260px; height: 260px; }
+  .magic {
+    position: absolute; inset: 0;
+    filter: drop-shadow(0 0 10px rgba(232, 201, 122, 0.6));
+  }
+  .magic.outer { animation: spin 18s linear infinite; }
+  .magic.inner { animation: spin 10s linear infinite reverse; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .roulette {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Cinzel", serif;
+    font-size: 64px;
+    color: var(--gold-soft);
+    text-shadow: 0 0 20px rgba(232, 201, 122, 0.9), 0 0 40px rgba(232, 201, 122, 0.5);
+  }
+  .roulette.locked { animation: lock 0.9s ease-out forwards; }
+  @keyframes lock {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.5); color: #fff; }
+    100% { transform: scale(1.2); color: #fff; }
+  }
+  .ritual-msg {
+    margin-top: 32px;
+    min-height: 1.8em;
+    font-size: 15px;
+    color: var(--gold-soft);
+    letter-spacing: 0.12em;
+    text-align: center;
+    padding: 0 20px;
+    transition: opacity .4s;
+  }
+  .ritual-calc {
+    margin-top: 8px;
+    min-height: 1.6em;
+    font-family: "Cinzel", serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  #flash {
+    position: fixed; inset: 0; z-index: 11;
+    background: radial-gradient(circle, #fffbe8 0%, rgba(232, 201, 122, 0.85) 40%, transparent 75%);
+    opacity: 0; pointer-events: none;
+  }
+  #flash.go { animation: flash 1.2s ease-out forwards; }
+  @keyframes flash {
+    0% { opacity: 0; transform: scale(0.3); }
+    25% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0; transform: scale(2); }
+  }
+
+  /* ---------- 結果 ---------- */
+  #result { display: none; }
+  #result.show { display: block; }
+  .reveal { opacity: 0; transform: translateY(16px); }
+  #result.show .reveal { animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
+  #result.show .reveal:nth-child(1) { animation-delay: .1s; }
+  #result.show .reveal:nth-child(2) { animation-delay: .5s; }
+  #result.show .reveal:nth-child(3) { animation-delay: .9s; }
+  #result.show .reveal:nth-child(4) { animation-delay: 1.2s; }
+  #result.show .reveal:nth-child(5) { animation-delay: 1.5s; }
+  #result.show .reveal:nth-child(6) { animation-delay: 1.8s; }
+  #result.show .reveal:nth-child(7) { animation-delay: 2.0s; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  .result-head { text-align: center; }
+  .for-name { font-size: 14px; color: var(--text-dim); }
+  .for-name strong { color: var(--gold-soft); font-weight: 600; }
+  .big-number-wrap {
+    position: relative;
+    width: 170px; height: 170px;
+    margin: 18px auto 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .big-number-wrap::before {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--glass-line);
+    background: radial-gradient(circle, rgba(232, 201, 122, 0.22) 0%, transparent 70%);
+    box-shadow: 0 0 40px rgba(232, 201, 122, 0.25), inset 0 0 30px rgba(232, 201, 122, 0.15);
+    animation: pulse 3.5s ease-in-out infinite;
+  }
+  .big-number-wrap::after {
+    content: "";
+    position: absolute; inset: -10px;
+    border-radius: 50%;
+    border: 1px dashed rgba(232, 201, 122, 0.3);
+    animation: spin 30s linear infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: .9; }
+    50% { transform: scale(1.05); opacity: 1; }
+  }
+  .big-number {
+    position: relative;
+    font-family: "Cinzel", serif;
+    font-size: 84px;
+    font-weight: 600;
+    line-height: 1;
+    background: linear-gradient(180deg, #fffaf0 0%, var(--gold) 60%, var(--gold-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 14px rgba(232, 201, 122, 0.6));
+  }
+  .master-badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: #2a1a05;
+    background: linear-gradient(135deg, #fff1c4, var(--gold));
+    border-radius: 999px;
+    padding: 3px 12px;
+    margin-bottom: 8px;
+  }
+  .type-name {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--gold-soft);
+    text-shadow: 0 0 18px rgba(232, 201, 122, 0.45);
+  }
+  .type-name .icon { margin-right: 6px; }
+  .catch { font-size: 14px; color: var(--text-dim); margin-top: 4px; }
+  .calc-line {
+    font-family: "Cinzel", serif;
+    font-size: 12px;
+    color: rgba(185, 179, 201, 0.75);
+    margin-top: 10px;
+    word-break: break-all;
+  }
+
+  .section { margin-top: 28px; }
+  .section h2 {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 16px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .section h2::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--glass-line), transparent);
+  }
+  .desc { font-size: 15px; line-height: 2; text-align: justify; }
+
+  .daily-grid { display: grid; gap: 12px; }
+  .daily-box {
+    background: rgba(5, 8, 30, 0.45);
+    border: 1px solid rgba(232, 201, 122, 0.2);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .daily-box .label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .daily-box p { font-size: 15px; }
+  .color-row { display: flex; align-items: center; gap: 14px; }
+  .swatch {
+    flex-shrink: 0;
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 18px var(--swatch-glow, rgba(255,255,255,.4));
+  }
+  .color-name { font-size: 18px; font-weight: 600; }
+  .color-hint { font-size: 12px; color: var(--text-dim); }
+
+  .cta { margin-top: 32px; }
+  .cta .btn { font-size: 15px; letter-spacing: 0.08em; padding: 17px 16px; white-space: nowrap; }
+  .cta-note { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 10px; }
+
+  .share { margin-top: 28px; text-align: center; }
+  .share-title { font-size: 13px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 12px; }
+  .share-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .share-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .3s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .share-btn:active { transform: scale(0.92); }
+  .share-btn svg { width: 22px; height: 22px; fill: currentColor; }
+  .share-x { background: #111; }
+  .share-line { background: #06c755; }
+  .share-fb { background: #1877f2; }
+  .share-copy { background: rgba(232, 201, 122, 0.18); color: var(--gold-soft); border-color: var(--glass-line); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom));
+    z-index: 20;
+    transform: translate(-50%, 20px);
+    background: rgba(20, 22, 60, 0.95);
+    border: 1px solid var(--glass-line);
+    color: var(--gold-soft);
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s, transform .3s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  .retry { margin-top: 20px; }
+
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(185, 179, 201, 0.6);
+    margin-top: 40px;
+    letter-spacing: 0.1em;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (min-width: 600px) {
+    .wrap { padding-top: 72px; }
+    h1 { font-size: 40px; }
+    .card { padding: 40px 36px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="nebula" aria-hidden="true"></div>
+
+<main class="wrap">
+  <header>
+    <svg class="moon-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fff6d8"/>
+          <stop offset="1" stop-color="#c99d46"/>
+        </linearGradient>
+      </defs>
+      <path d="M40 8a24 24 0 1 0 16 40A20 20 0 1 1 40 8z" fill="url(#mg)"/>
+      <path d="M46 18l1.6 4.2 4.4.2-3.4 2.8 1.2 4.3-3.8-2.5-3.8 2.5 1.2-4.3-3.4-2.8 4.4-.2z" fill="#fff6d8"/>
+    </svg>
+    <p class="eyebrow">DESTINY NUMBER</p>
+    <h1>運命数診断</h1>
+    <p class="lead">生まれた日に刻まれた数字が、<br>あなたの本当の輝きを教えてくれます。</p>
+  </header>
+
+  <!-- 入力フォーム -->
+  <section id="formCard" class="card">
+    <div class="divider">✧ あなたのことを教えてください ✧</div>
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="name">お名前（ニックネームでもOK）</label>
+        <input type="text" id="name" maxlength="20" placeholder="例）ほしの みらい" autocomplete="nickname">
+      </div>
+      <div class="field">
+        <label for="year">生年月日</label>
+        <div class="date-row">
+          <div class="select-wrap"><select id="year" aria-label="年"></select></div>
+          <div class="select-wrap"><select id="month" aria-label="月"></select></div>
+          <div class="select-wrap"><select id="day" aria-label="日"></select></div>
+        </div>
+      </div>
+      <p class="error" id="error" role="alert"></p>
+      <button type="submit" class="btn btn-gold">✦ 運命数を占う ✦</button>
+    </form>
+    <p class="note">入力内容は保存・送信されません。安心してお楽しみください。</p>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="card" aria-live="polite">
+    <div class="result-head reveal">
+      <p class="for-name"><strong id="rName"></strong> さんの運命数は…</p>
+      <div class="big-number-wrap"><span class="big-number" id="rNumber"></span></div>
+      <span class="master-badge hidden" id="rMaster">MASTER NUMBER</span>
+      <p class="type-name"><span class="icon" id="rIcon"></span><span id="rType"></span></p>
+      <p class="catch" id="rCatch"></p>
+      <p class="calc-line" id="rCalc"></p>
+    </div>
+
+    <div class="section reveal">
+      <h2>✦ あなたの本質</h2>
+      <p class="desc" id="rDesc"></p>
+    </div>
+
+    <div class="section reveal">
+      <h2>✦ 今日のメッセージ</h2>
+      <div class="daily-grid">
+        <div class="daily-box">
+          <p class="label">TODAY'S ADVICE</p>
+          <p id="rAdvice"></p>
+        </div>
+        <div class="daily-box">
+          <p class="label">LUCKY COLOR</p>
+          <div class="color-row">
+            <span class="swatch" id="rSwatch"></span>
+            <div>
+              <p class="color-name" id="rColor"></p>
+              <p class="color-hint">小物や服にとり入れると運気アップ</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta reveal">
+      <p class="cta-note">恋愛・仕事・これからの運勢まで</p>
+      <!-- ▼ リンク先はあとで差し替えてください -->
+      <a href="#" id="moreLink" class="btn btn-gold" target="_blank" rel="noopener">もっと詳しく知りたい方はこちら</a>
+    </div>
+
+    <div class="share reveal">
+      <p class="share-title">― 診断結果をシェアする ―</p>
+      <div class="share-row">
+        <a class="share-btn share-x" id="shareX" target="_blank" rel="noopener" aria-label="Xでシェア">
+          <svg viewBox="0 0 24 24"><path d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.9-6.4L6.3 22H3.2l7.3-8.3L1 2h6.3l4.4 5.9L18.9 2zm-1.1 18.2h1.7L6.3 3.7H4.5l13.3 16.5z"/></svg>
+        </a>
+        <a class="share-btn share-line" id="shareLine" target="_blank" rel="noopener" aria-label="LINEで送る">
+          <svg viewBox="0 0 24 24"><path d="M12 2.5C6.2 2.5 1.5 6.3 1.5 11c0 4.2 3.7 7.7 8.8 8.4.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.6 1.1-.5 6-3.5 8.2-6 1.5-1.7 2.3-3.4 2.3-5.4C22.5 6.3 17.8 2.5 12 2.5zM8.3 13.7H6.2c-.3 0-.6-.3-.6-.6V8.9c0-.3.3-.6.6-.6s.6.3.6.6v3.6h1.5c.3 0 .6.3.6.6s-.3.6-.6.6zm2.2-.6c0 .3-.3.6-.6.6s-.6-.3-.6-.6V8.9c0-.3.3-.6.6-.6s.6.3.6.6v4.2zm5 0c0 .3-.2.5-.4.6h-.2c-.2 0-.4-.1-.5-.2l-2.1-2.9v2.6c0 .3-.3.6-.6.6s-.6-.3-.6-.6V8.9c0-.3.2-.5.4-.6h.2c.2 0 .4.1.5.3l2.1 2.9V8.9c0-.3.3-.6.6-.6s.6.3.6.6v4.2zm3.4-2.7c.3 0 .6.3.6.6s-.3.6-.6.6h-1.5v.9h1.5c.3 0 .6.3.6.6s-.3.6-.6.6h-2.1c-.3 0-.6-.3-.6-.6V8.9c0-.3.3-.6.6-.6h2.1c.3 0 .6.3.6.6s-.3.6-.6.6h-1.5v.9h1.5z"/></svg>
+        </a>
+        <a class="share-btn share-fb" id="shareFb" target="_blank" rel="noopener" aria-label="Facebookでシェア">
+          <svg viewBox="0 0 24 24"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22h3.4z"/></svg>
+        </a>
+        <button type="button" class="share-btn share-copy" id="shareCopy" aria-label="結果をコピー・共有">
+          <svg viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="retry reveal">
+      <button type="button" class="btn btn-ghost" id="retry">↺ ほかの人も占ってみる</button>
+    </div>
+  </section>
+
+  <footer>© 運命数診断 ― 星のことばをあなたへ</footer>
+</main>
+
+<!-- 診断中の演出 -->
+<div id="ritual" aria-hidden="true">
+  <div class="circle-box">
+    <svg class="magic outer" viewBox="0 0 260 260">
+      <defs>
+        <path id="ring" d="M130,130 m-108,0 a108,108 0 1,1 216,0 a108,108 0 1,1 -216,0"/>
+      </defs>
+      <circle cx="130" cy="130" r="122" fill="none" stroke="#e8c97a" stroke-width="1" opacity=".8"/>
+      <circle cx="130" cy="130" r="96" fill="none" stroke="#e8c97a" stroke-width=".8" opacity=".6"/>
+      <text font-family="Cinzel, serif" font-size="11" fill="#f6e4b0" letter-spacing="2.5" textLength="670" lengthAdjust="spacing" opacity=".9">
+        <textPath href="#ring">I · II · III · IV · V · VI · VII · VIII · IX · XI · XXII · XXXIII ·</textPath>
+      </text>
+    </svg>
+    <svg class="magic inner" viewBox="0 0 260 260">
+      <polygon points="130,44 204,173 56,173" fill="none" stroke="#e8c97a" stroke-width="1" opacity=".7"/>
+      <polygon points="130,216 56,87 204,87" fill="none" stroke="#e8c97a" stroke-width="1" opacity=".7"/>
+      <circle cx="130" cy="130" r="58" fill="none" stroke="#e8c97a" stroke-width=".8" opacity=".5"/>
+    </svg>
+    <div class="roulette" id="roulette">?</div>
+  </div>
+  <p class="ritual-msg" id="ritualMsg"></p>
+  <p class="ritual-calc" id="ritualCalc"></p>
+</div>
+<div id="flash" aria-hidden="true"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     設定：「もっと詳しく」ボタンのリンク先（あとで差し替え）
+     ========================================================= */
+  var MORE_URL = "#";
+
+  /* =========================================================
+     運命数データ
+     ========================================================= */
+  var TYPES = {
+    1: {
+      name: "一番星タイプ", icon: "★", catchCopy: "道を切り開く、生まれながらのリーダー",
+      desc: "あなたは夜空で最初に輝く一番星のような人。自分の意志でまっすぐ道を切り開く力を持ち、周りの人はその姿に勇気をもらっています。決断力と行動力にあふれ、新しいことを始めるときのあなたは誰よりも輝いています。一見クールに見えても、内側には仲間を守る熱い想いがあるのも魅力。あなたが一歩を踏み出すたび、周りの景色まで明るく変わっていく――そんな特別な才能の持ち主です。",
+      advice: [
+        "気になっていたことに、今日こそ「最初の一歩」を。あなたの行動が流れを変えます。",
+        "迷ったら直感で即決を。今日のあなたの決断はとても冴えています。",
+        "誰かを引っ張る場面がありそう。自信を持って声をかけてみて。"
+      ],
+      colors: [["ゴールド", "#e8c35a"], ["スカーレット", "#e0434b"], ["ホワイト", "#f5f5f5"]]
+    },
+    2: {
+      name: "月タイプ", icon: "☾", catchCopy: "やさしい光で人をつなぐ、調和の人",
+      desc: "あなたはやさしい光で夜を照らす月のような人。相手の気持ちを自然に感じ取り、言葉にしなくても寄り添える繊細さを持っています。あなたがそばにいるだけで、周りの人はホッと安心できるはず。争いを和らげ、人と人をつなぐ調和の才能は、どんな場所でも大切にされる宝物です。控えめに見えて、実は芯の強さも秘めているあなた。その穏やかな光は、多くの人の心をそっと救っています。",
+      advice: [
+        "身近な人に「ありがとう」を伝えて。思わぬ縁が深まります。",
+        "今日は聞き役に回ると幸運が。相手の話の中に大切なヒントがあります。",
+        "ゆったりした音楽やお茶の時間で、心を整えるとツキが巡ってきます。"
+      ],
+      colors: [["パールホワイト", "#f3efe6"], ["ラベンダー", "#b8a4e3"], ["シルバー", "#c0c6d0"]]
+    },
+    3: {
+      name: "太陽タイプ", icon: "☀", catchCopy: "みんなを笑顔にする、天性のムードメーカー",
+      desc: "あなたはその場をパッと明るくする太陽のような人。持ち前の明るさとユーモアで、出会う人を自然と笑顔にしてしまいます。好奇心が旺盛で、楽しいことを見つける天才。豊かな表現力と遊び心で、何気ない毎日をキラキラしたものに変えていけるのがあなたの魅力です。あなたが心から楽しんでいるとき、その輝きは周りにも広がり、みんなを元気にしていきます。笑顔こそ、あなたの最強の才能です。",
+      advice: [
+        "楽しそうなことには迷わず参加を。笑顔の数だけ運気がアップします。",
+        "思ったことを言葉や文章にしてみて。表現することが幸運の鍵です。",
+        "おしゃれをひとつ楽しんで。気分が上がると良縁も舞い込みます。"
+      ],
+      colors: [["サンイエロー", "#f7c948"], ["オレンジ", "#f39c4a"], ["コーラルピンク", "#f28b82"]]
+    },
+    4: {
+      name: "大地タイプ", icon: "◆", catchCopy: "誰からも頼られる、誠実な努力家",
+      desc: "あなたはすべてを支える大地のように、どっしりと頼れる人。コツコツと努力を積み重ねる力は誰にも負けず、任されたことを最後までやり遂げる誠実さで、周りから深く信頼されています。派手さよりも本物を大切にするあなたの生き方は、時間が経つほど価値を増していくもの。あなたが築いたものは、決して崩れることのない確かな土台になります。その安定感こそ、多くの人の心の支えです。",
+      advice: [
+        "後回しにしていたことをひとつ片付けて。スッキリした場所に運が入ります。",
+        "計画を立て直すのに最適な日。小さな目標を書き出してみて。",
+        "自然に触れると吉。少し遠回りして、緑の多い道を歩いてみて。"
+      ],
+      colors: [["モスグリーン", "#7a9a5b"], ["ブラウン", "#9c7552"], ["ベージュ", "#d9c4a1"]]
+    },
+    5: {
+      name: "流れ星タイプ", icon: "☄", catchCopy: "自由に世界を駆ける、好奇心の冒険家",
+      desc: "あなたは夜空を自由に駆け抜ける流れ星のような人。好奇心と行動力にあふれ、新しい世界へ軽やかに飛び込んでいける冒険家です。変化を楽しめる柔軟さと、どんな場所にもすぐなじめる適応力は、まさに天からの贈り物。あなたの話はいつも刺激的で、周りの人をワクワクさせます。型にはまらない発想が、思いがけない幸運を引き寄せることも。あなたが自由に輝くほど、願いは叶っていきます。",
+      advice: [
+        "いつもと違う道やお店を選んでみて。新しい発見が待っています。",
+        "思い立ったらすぐ行動。フットワークの軽さが幸運を呼びます。",
+        "新しい出会いにチャンスあり。気軽に話しかけてみて。"
+      ],
+      colors: [["ターコイズ", "#3cc4c4"], ["スカイブルー", "#6fb7f0"], ["ライムグリーン", "#a8d86a"]]
+    },
+    6: {
+      name: "金星タイプ", icon: "♡", catchCopy: "愛と美に守られた、あたたかな癒やし手",
+      desc: "あなたは愛と美の星・金星に守られた、あたたかな心の持ち主。困っている人を放っておけない優しさと、大切な人を全力で守る深い愛情を持っています。美しいものを見抜くセンスにも恵まれ、あなたのいる空間はいつも心地よく整っていきます。責任感が強く、家族や仲間からの信頼も厚い人。あなたが注ぐ愛は、めぐりめぐって何倍もの幸せとなり、あなたのもとへ帰ってきます。",
+      advice: [
+        "自分へのご褒美を忘れずに。あなたが満たされると、周りも幸せになります。",
+        "お部屋に花やグリーンを飾ると、愛情運がぐんとアップ。",
+        "大切な人に、手料理やちょっとした贈り物を。笑顔が返ってきます。"
+      ],
+      colors: [["ローズピンク", "#e88aa8"], ["エメラルド", "#3fae8c"], ["ミルキーホワイト", "#f7f1ea"]]
+    },
+    7: {
+      name: "北極星タイプ", icon: "✧", catchCopy: "本質を見抜く、凛とした探求者",
+      desc: "あなたは夜空でぶれずに輝き続ける北極星のような人。物事の本質を見抜く鋭い洞察力と、ひとつのことを深く探求する知性を持っています。流行や周りの声に流されず、自分の信じる道を静かに進む姿は、ミステリアスで凛とした魅力にあふれています。一人の時間で磨かれたあなたの言葉には、人の心を動かす重みがあるはず。迷う人にとって、あなたは道しるべとなる存在です。",
+      advice: [
+        "一人で静かに過ごす時間を。答えはあなたの内側にあります。",
+        "本や映画から大切なヒントが届きそう。気になる一冊を手に取って。",
+        "夜空を見上げてみて。心がすっと整い、迷いが晴れていきます。"
+      ],
+      colors: [["ネイビー", "#2e4a7d"], ["ディープパープル", "#6a4c9c"], ["シルバー", "#c0c6d0"]]
+    },
+    8: {
+      name: "木星タイプ", icon: "♃", catchCopy: "成功と豊かさを引き寄せる、大きな器",
+      desc: "あなたは幸運と繁栄をつかさどる木星のように、大きな成功を引き寄せる人。目標に向かって突き進むパワーと、チャンスを逃さない判断力を兼ね備えています。困難な状況でもくじけない強さがあり、その頼もしさに多くの人が自然とついてきます。努力をしっかり形にできるのもあなたの才能。あなたが豊かになるほど、周りの人にも幸せが広がっていく――そんな大きな器の持ち主です。",
+      advice: [
+        "目標を口に出してみて。言葉にした願いが現実を動かします。",
+        "お金の流れを見直すと金運アップ。小さな工夫が大きな実りに。",
+        "頼まれごとは引き受けると吉。信頼が次のチャンスを連れてきます。"
+      ],
+      colors: [["ゴールド", "#e8c35a"], ["ワインレッド", "#8e2c48"], ["ブラック", "#2a2a2e"]]
+    },
+    9: {
+      name: "オーロラタイプ", icon: "❂", catchCopy: "すべてを包み込む、博愛の人",
+      desc: "あなたは夜空を幻想的に彩るオーロラのように、すべてを包み込む人。広い心と深い思いやりで、どんな人も分け隔てなく受け入れることができます。豊かな感受性と想像力に恵まれ、芸術的なセンスも抜群。これまでの経験すべてを糧にできる、成熟した魂の持ち主です。あなたの言葉やまなざしに救われた人は、きっと数えきれないほど。その存在そのものが、誰かの希望の光になっています。",
+      advice: [
+        "不要なものを手放して。空いたスペースに新しい幸運が入ってきます。",
+        "誰かの話をじっくり聞いてあげて。その優しさがあなたに巡ってきます。",
+        "アートや音楽に触れると、あなたの感性がさらに輝きます。"
+      ],
+      colors: [["パープル", "#9b6fd1"], ["オーロラグリーン", "#5fd3b0"], ["ピンク", "#f2a6c9"]]
+    },
+    11: {
+      name: "稲妻タイプ", icon: "ϟ", catchCopy: "天からひらめきを授かった、直感の人",
+      desc: "11は特別な力を宿す「マスターナンバー」。あなたは夜空を照らす稲妻のように、鋭い直感とひらめきを授かった人です。言葉にならない空気や人の想いを感じ取る力は、まさに天からの贈り物。あなたのふとしたアイデアや一言が、誰かの人生を大きく動かすこともあります。感受性が豊かな分、人の痛みにも寄り添える優しさの持ち主。あなたが直感を信じるとき、奇跡のような出来事が起こり始めます。",
+      advice: [
+        "ふと浮かんだ直感をメモして。それが未来へのサインです。",
+        "深呼吸で心を静めてみて。インスピレーションが冴えわたります。",
+        "偶然の一致に注目して。意味のある出来事が起こりそうな日です。"
+      ],
+      colors: [["シルバー", "#c0c6d0"], ["アイスブルー", "#a9d8f2"], ["バイオレット", "#8f6fe0"]]
+    },
+    22: {
+      name: "銀河タイプ", icon: "✺", catchCopy: "壮大な夢を形にする、選ばれし創造者",
+      desc: "22は大きな使命を持つ「マスターナンバー」。あなたは無数の星をたたえる銀河のように、壮大なビジョンを描き、それを現実にできる稀有な人です。夢を語るだけでなく、確かな計画と実行力でひとつずつ形にしていく力は、まさに未来の建築家。あなたの手がけたことは、多くの人の明日を支える礎となるでしょう。スケールの大きさと誠実さをあわせ持つ、まさに選ばれた存在です。",
+      advice: [
+        "大きな夢を紙に書き出してみて。今日描いた未来図が現実になっていきます。",
+        "仲間と一緒に動くと吉。あなたのまとめ役としての力が光ります。",
+        "長く続けたいことを始めるのに最適な日です。"
+      ],
+      colors: [["ロイヤルブルー", "#3a5fcd"], ["ゴールド", "#e8c35a"], ["コーラル", "#f08a6c"]]
+    },
+    33: {
+      name: "天使タイプ", icon: "✟", catchCopy: "無償の愛で世界を癒やす、光の存在",
+      desc: "33は最も希少な「マスターナンバー」。あなたは天使のように、無償の愛で周りを癒やす力を持った人です。純粋で、損得ではなく心で動けるあなたの優しさは、出会う人の心を自然とほどいていきます。どこか浮世離れした不思議な魅力があり、一緒にいるだけで温かな気持ちになれる存在。あなたの笑顔と言葉には、人を立ち直らせる特別な光が宿っています。あなたがいるだけで、世界は少し優しくなるのです。",
+      advice: [
+        "まずは自分を大切に。あなたが癒やされると、世界が優しくなります。",
+        "誰かに笑顔を向けて。その笑顔が小さな奇跡を起こします。",
+        "感謝の気持ちを書き出すと、運気がさらに上昇します。"
+      ],
+      colors: [["ホワイト", "#f8f8f4"], ["パステルピンク", "#f6c1d6"], ["ペールゴールド", "#f0dca0"]]
+    }
+  };
+
+  var MASTER = [11, 22, 33];
+
+  /* =========================================================
+     計算ロジック
+     ・生年月日の数字をすべて足す
+     ・1桁になるまで足し続ける
+     ・途中で 11 / 22 / 33 になったらそこで止める
+     ========================================================= */
+  function digitSum(n) {
+    return String(n).split("").reduce(function (a, d) { return a + Number(d); }, 0);
+  }
+
+  function calcDestiny(y, m, d) {
+    var digits = (String(y) + pad(m) + pad(d)).split("");
+    var total = digits.reduce(function (a, c) { return a + Number(c); }, 0);
+    var steps = [digits.join("+") + " = " + total];
+    var n = total;
+    while (n > 9 && MASTER.indexOf(n) === -1) {
+      var next = digitSum(n);
+      steps.push(String(n).split("").join("+") + " = " + next);
+      n = next;
+    }
+    return { number: n, steps: steps };
+  }
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+  /* 今日の日付と名前から、毎日変わるアドバイス・カラーを選ぶ */
+  function dailyIndex(seedStr, len) {
+    var h = 2166136261;
+    for (var i = 0; i < seedStr.length; i++) {
+      h ^= seedStr.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return Math.abs(h) % len;
+  }
+
+  /* =========================================================
+     フォーム準備
+     ========================================================= */
+  var $ = function (id) { return document.getElementById(id); };
+  var yearSel = $("year"), monthSel = $("month"), daySel = $("day");
+  var thisYear = new Date().getFullYear();
+
+  function addOption(sel, value, label) {
+    var o = document.createElement("option");
+    o.value = value; o.textContent = label;
+    sel.appendChild(o);
+  }
+
+  addOption(yearSel, "", "年");
+  for (var y = thisYear; y >= 1920; y--) addOption(yearSel, y, y + "年");
+  addOption(monthSel, "", "月");
+  for (var m = 1; m <= 12; m++) addOption(monthSel, m, m + "月");
+
+  function fillDays() {
+    var keep = daySel.value;
+    var yy = Number(yearSel.value) || 2000; // 未選択時はうるう年で31日まで出す
+    var mm = Number(monthSel.value) || 1;
+    var max = new Date(yy, mm, 0).getDate();
+    daySel.innerHTML = "";
+    addOption(daySel, "", "日");
+    for (var d = 1; d <= max; d++) addOption(daySel, d, d + "日");
+    if (keep && Number(keep) <= max) daySel.value = keep;
+  }
+  fillDays();
+  yearSel.addEventListener("change", fillDays);
+  monthSel.addEventListener("change", fillDays);
+
+  /* =========================================================
+     診断実行
+     ========================================================= */
+  var lastShareText = "";
+
+  $("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = $("name").value.trim();
+    var yy = Number(yearSel.value), mm = Number(monthSel.value), dd = Number(daySel.value);
+    var err = $("error");
+
+    if (!name) { err.textContent = "お名前を入力してください"; $("name").focus(); return; }
+    if (!yy || !mm || !dd) { err.textContent = "生年月日を選択してください"; return; }
+    if (new Date(yy, mm - 1, dd) > new Date()) { err.textContent = "未来の日付は選べません"; return; }
+    err.textContent = "";
+    if (document.activeElement) document.activeElement.blur();
+
+    var result = calcDestiny(yy, mm, dd);
+    playRitual(result, function () { showResult(name, result); });
+  });
+
+  /* ---- タメの演出 ---- */
+  function playRitual(result, done) {
+    var ritual = $("ritual"), roulette = $("roulette"), msg = $("ritualMsg"), calc = $("ritualCalc");
+    var messages = [
+      "生年月日に宿る数字を集めています…",
+      "星々の配置を読み解いています…",
+      "あなたの運命の数字が、浮かび上がってきました…"
+    ];
+    var pool = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
+
+    roulette.classList.remove("locked");
+    roulette.textContent = "?";
+    msg.textContent = messages[0];
+    calc.textContent = "";
+    ritual.classList.add("show");
+    ritual.setAttribute("aria-hidden", "false");
+
+    var speed = 70, elapsed = 0, total = 4200;
+    function spin() {
+      roulette.textContent = pool[Math.floor(Math.random() * pool.length)];
+      elapsed += speed;
+      if (elapsed > total * 0.5) speed += 18; // だんだんゆっくりに
+      if (elapsed < total) setTimeout(spin, speed);
+      else lock();
+    }
+    setTimeout(spin, 500);
+
+    setTimeout(function () {
+      msg.style.opacity = 0;
+      setTimeout(function () { msg.textContent = messages[1]; msg.style.opacity = 1; calc.textContent = result.steps[0]; }, 400);
+    }, 1500);
+    setTimeout(function () {
+      msg.style.opacity = 0;
+      setTimeout(function () { msg.textContent = messages[2]; msg.style.opacity = 1; calc.textContent = result.steps.slice(1).join("  →  ") || calc.textContent; }, 400);
+    }, 3200);
+
+    function lock() {
+      roulette.textContent = result.number;
+      roulette.classList.add("locked");
+      setTimeout(function () {
+        var flash = $("flash");
+        flash.classList.remove("go"); void flash.offsetWidth; flash.classList.add("go");
+        setTimeout(function () {
+          ritual.classList.remove("show");
+          ritual.setAttribute("aria-hidden", "true");
+          done();
+        }, 300);
+      }, 1100);
+    }
+  }
+
+  /* ---- 結果表示 ---- */
+  function showResult(name, result) {
+    var n = result.number, t = TYPES[n];
+    var today = new Date();
+    var todayKey = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+    var advice = t.advice[dailyIndex(todayKey + name + n + "a", t.advice.length)];
+    var color = t.colors[dailyIndex(todayKey + name + n + "c", t.colors.length)];
+
+    $("rName").textContent = name;
+    $("rNumber").textContent = n;
+    $("rMaster").classList.toggle("hidden", MASTER.indexOf(n) === -1);
+    $("rIcon").textContent = t.icon;
+    $("rType").textContent = t.name;
+    $("rCatch").textContent = t.catchCopy;
+    $("rCalc").textContent = result.steps.join("  →  ");
+    $("rDesc").textContent = t.desc;
+    $("rAdvice").textContent = advice;
+    $("rColor").textContent = color[0];
+    $("rSwatch").style.background = color[1];
+    $("rSwatch").style.setProperty("--swatch-glow", color[1]);
+    $("moreLink").href = MORE_URL;
+
+    // シェア
+    var url = location.href.split("#")[0].split("?")[0];
+    lastShareText = "私の運命数は「" + n + "＝" + t.name + "」でした" + t.icon + "\n" + t.catchCopy + "\n#運命数診断";
+    $("shareX").href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(lastShareText) + "&url=" + encodeURIComponent(url);
+    $("shareLine").href = "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(lastShareText);
+    $("shareFb").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
+
+    $("formCard").classList.add("hidden");
+    var res = $("result");
+    res.classList.remove("show"); void res.offsetWidth;
+    res.classList.add("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* 端末の共有機能 → なければクリップボードへコピー */
+  $("shareCopy").addEventListener("click", function () {
+    var url = location.href.split("#")[0].split("?")[0];
+    if (navigator.share) {
+      navigator.share({ title: "運命数診断", text: lastShareText, url: url }).catch(function () {});
+      return;
+    }
+    var text = lastShareText + "\n" + url;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () { toast("結果をコピーしました ✦"); }, function () { toast("コピーできませんでした"); });
+    } else {
+      toast("コピーできませんでした");
+    }
+  });
+
+  $("retry").addEventListener("click", function () {
+    $("result").classList.remove("show");
+    $("formCard").classList.remove("hidden");
+    $("name").value = "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  var toastTimer;
+  function toast(text) {
+    var el = $("toast");
+    el.textContent = text;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove("show"); }, 2200);
+  }
+
+  /* =========================================================
+     星空アニメーション
+     ========================================================= */
+  var canvas = $("sky"), ctx = canvas.getContext("2d");
+  var stars = [], shooting = [], W = 0, H = 0, dpr = 1;
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var count = Math.round((W * H) / 3500);
+    stars = [];
+    for (var i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.3 + 0.2,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.6 + Math.random() * 1.8,
+        gold: Math.random() < 0.15
+      });
+    }
+  }
+
+  function spawnShooting() {
+    shooting.push({
+      x: Math.random() * W * 0.8 + W * 0.2,
+      y: Math.random() * H * 0.4,
+      len: 80 + Math.random() * 80,
+      v: 7 + Math.random() * 5,
+      life: 1
+    });
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    var time = t / 1000;
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      var a = reduceMotion ? 0.7 : 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(time * s.speed + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = s.gold ? "rgba(246,228,176," + a + ")" : "rgba(255,255,255," + a + ")";
+      ctx.fill();
+      if (s.r > 1.2 && a > 0.85) { // 大きな星はキラッと十字に光る
+        ctx.strokeStyle = "rgba(255,255,255," + (a - 0.6) + ")";
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(s.x - s.r * 4, s.y); ctx.lineTo(s.x + s.r * 4, s.y);
+        ctx.moveTo(s.x, s.y - s.r * 4); ctx.lineTo(s.x, s.y + s.r * 4);
+        ctx.stroke();
+      }
+    }
+
+    for (var j = shooting.length - 1; j >= 0; j--) {
+      var m = shooting[j];
+      var dx = -m.len * 0.8, dy = m.len * 0.45;
+      var g = ctx.createLinearGradient(m.x, m.y, m.x - dx, m.y - dy);
+      g.addColorStop(0, "rgba(255,250,230," + m.life + ")");
+      g.addColorStop(1, "rgba(255,250,230,0)");
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y);
+      ctx.lineTo(m.x - dx, m.y - dy);
+      ctx.stroke();
+      m.x -= m.v * 0.87; m.y += m.v * 0.5;
+      m.life -= 0.012;
+      if (m.life <= 0) shooting.splice(j, 1);
+    }
+
+    if (!reduceMotion && Math.random() < 0.004) spawnShooting();
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
